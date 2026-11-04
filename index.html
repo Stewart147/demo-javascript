@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Application</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/8a10e0f309.js" crossorigin="anonymous"></script>
+    
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Library</h1>
+        
+        <!-- Search Section -->
+        <div class="section">
+            <div class="section-title">Search Books</div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Enter book title to search">
+                <button onclick="searchBook()">Search</button>
+            </div>
+            <div id="searchResult"></div>
+        </div>
+
+        <!-- Add Book Section -->
+        <div class="section">
+            <div class="section-title">Add New Book</div>
+            <form id="addBookForm">
+                <div class="form-group">
+                    <label for="bookTitle">Title:</label>
+                    <input type="text" id="bookTitle" placeholder="Enter book title" required>
+                </div>
+                <button type="submit">Add Book</button>
+            </form>
+        </div>
+
+        <!-- Books List Section -->
+        <div class="section">
+            <div class="section-title">Books in Library</div>
+            <div id="bookList"></div>
+        </div>
+    </div>
+
+    <!-- go to script.js -->
+
+     <script src="script.js"></script>
+
+   
+</body>
+</html>
