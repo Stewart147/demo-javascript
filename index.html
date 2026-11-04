@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            color: #555;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        input[type="text"],
+        input[type="number"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            padding: 12px 25px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #5568d3;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        #searchResult {
+            margin-top: 10px;
+            padding: 12px 15px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+            border-radius: 3px;
+            display: none;
+            font-weight: 500;
+        }
+        
+        #bookList {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 0;
+            list-style-type: none;
+        }
+        
+        .book-item {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .book-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .book-item:last-child {
+            border-bottom: none;
+        }
+        
+        .book-number {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 10px;
+            min-width: 30px;
+        }
+        
+        .book-title {
+            flex: 1;
+            color: #333;
+        }
+        
+        .book-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .delete-btn {
+            padding: 6px 12px;
+            background-color: #f44336;
+            font-size: 13px;
+            border-radius: 3px;
+        }
+        
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Library</h1>
+        
+        <!-- Search Section -->
+        <div class="section">
+            <div class="section-title">Search Books</div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Enter book title to search">
+                <button onclick="searchBook()">Search</button>
+            </div>
+            <div id="searchResult"></div>
+        </div>
+
+        <!-- Add Book Section -->
+        <div class="section">
+            <div class="section-title">Add New Book</div>
+            <form id="addBookForm">
+                <div class="form-group">
+                    <label for="bookTitle">Title:</label>
+                    <input type="text" id="bookTitle" placeholder="Enter book title" required>
+                </div>
+                <button type="submit">Add Book</button>
+            </form>
+        </div>
+
+        <!-- Books List Section -->
+        <div class="section">
+            <div class="section-title">Books in Library</div>
+            <div id="bookList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize library array with default books
+        let library = [
+            "Lord of the Rings",
+            "Catcher in the Rye",
+            "Wuthering Heights",
+            "The Divine Comedy",
+            "To Kill a Mocking Bird"
+        ];
+
+        // Display all books from the library array
+        function displayBooks() {
+            let bookList = document.getElementById("bookList");
+            bookList.innerHTML = "";
+            
+            if (library.length === 0) {
+                bookList.innerHTML = '<div class="empty-message">No books in library yet. Add one!</div>';
+                return;
+            }
+            
+            library.forEach(function(title, index) {
+                let bookItem = document.createElement("div");
+                bookItem.className = "book-item";
+                
+                let bookContent = document.createElement("span");
+                bookContent.innerHTML = '<span class="book-number">' + (index + 1) + '.</span><span class="book-title">' + title + '</span>';
+                
+                let deleteBtn = document.createElement("button");
+                deleteBtn.className = "delete-btn";
+                deleteBtn.textContent = "Delete";
+                deleteBtn.onclick = function() {
+                    deleteBook(index);
+                };
+                
+                bookItem.appendChild(bookContent);
+                bookItem.appendChild(deleteBtn);
+                bookList.appendChild(bookItem);
+            });
+        }
+
+        // Add new book from form input
+        function addBook(event) {
+            event.preventDefault();
+            
+            let titleInput = document.getElementById("bookTitle");
+            let title = titleInput.value.trim();
+            
+            if (title !== "") {
+                library.push(title);
+                titleInput.value = "";
+                displayBooks();
+                clearSearchResult();
+            }
+        }
+
+        // Delete book from library
+        function deleteBook(index) {
+            library.splice(index, 1);
+            displayBooks();
+            clearSearchResult();
+        }
+
+        // Search for books by title
+        function searchBook() {
+            let searchInput = document.getElementById("searchInput");
+            let searchTerm = searchInput.value.toLowerCase().trim();
+            let searchResult = document.getElementById("searchResult");
+            
+            if (searchTerm === "") {
+                clearSearchResult();
+                return;
+            }
+            
+            let found = library.filter(function(title) {
+                return title.toLowerCase().includes(searchTerm);
+            });
+            
+            if (found.length > 0) {
+                searchResult.style.display = "block";
+                searchResult.textContent = "Found " + found.length + " book(s): " + found.join(", ");
+            } else {
+                searchResult.style.display = "block";
+                searchResult.textContent = "No books found matching '" + searchTerm + "'";
+                searchResult.style.backgroundColor = "#ffebee";
+                searchResult.style.color = "#c62828";
+                searchResult.style.borderLeft = "4px solid #f44336";
+            }
+        }
+
+        // Clear search result message
+        function clearSearchResult() {
+            let searchResult = document.getElementById("searchResult");
+            searchResult.style.display = "none";
+            searchResult.style.backgroundColor = "#e8f5e9";
+            searchResult.style.color = "#2e7d32";
+            searchResult.style.borderLeft = "4px solid #4caf50";
+        }
+
+        // Event listeners
+        document.getElementById("addBookForm").addEventListener("submit", addBook);
+
+        // Initial display on page load
+        window.addEventListener("load", function() {
+            displayBooks();
+        });
+    </script>
+</body>
+</html>
